@@ -1,0 +1,112 @@
+# crypto-risk-calculator
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Risk Management Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    .calculator {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .result {
+      background-color: #e8f5e9;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <h1>Crypto Risk Calculator</h1><label for="accountSize">Account Size ($)</label>
+<input type="number" id="accountSize" placeholder="e.g., 1000" required>
+
+<label for="riskPercent">Risk per Trade (%)</label>
+<input type="number" id="riskPercent" placeholder="e.g., 2" required>
+
+<label for="entryPrice">Entry Price ($)</label>
+<input type="number" id="entryPrice" placeholder="e.g., 50000" required>
+
+<label for="stopLossPrice">Stop-Loss Price ($)</label>
+<input type="number" id="stopLossPrice" placeholder="e.g., 49500" required>
+
+<label for="leverage">Leverage (x)</label>
+<input type="number" id="leverage" placeholder="e.g., 10" required>
+
+<button onclick="calculateRisk()">Calculate</button>
+
+<div class="result" id="result" style="display: none;"></div>
+
+  </div>  <script>
+    function calculateRisk() {
+      const accountSize = parseFloat(document.getElementById('accountSize').value);
+      const riskPercent = parseFloat(document.getElementById('riskPercent').value);
+      const entryPrice = parseFloat(document.getElementById('entryPrice').value);
+      const stopLossPrice = parseFloat(document.getElementById('stopLossPrice').value);
+      const leverage = parseFloat(document.getElementById('leverage').value);
+
+      if (isNaN(accountSize) || isNaN(riskPercent) || isNaN(entryPrice) || isNaN(stopLossPrice) || isNaN(leverage)) {
+        alert('Please fill in all fields with valid numbers.');
+        return;
+      }
+
+      const riskAmount = accountSize * (riskPercent / 100);
+      const priceDifference = Math.abs(entryPrice - stopLossPrice);
+      const positionSize = riskAmount / priceDifference;
+      const liquidationPrice = entryPrice * (1 - (1 / leverage));
+      const riskToRewardRatio = (priceDifference > 0) ? (priceDifference / (entryPrice - stopLossPrice)).toFixed(2) : 'N/A';
+
+      const resultDiv = document.getElementById('result');
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = `
+        Position Size: <strong>${positionSize.toFixed(4)}</strong> units<br>
+        Risk Amount: <strong>$${riskAmount.toFixed(2)}</strong><br>
+        Estimated Liquidation Price: <strong>$${liquidationPrice.toFixed(2)}</strong><br>
+        Risk-to-Reward Ratio: <strong>${riskToRewardRatio}</strong>
+      `;
+    }
+  </script></body>
+</html>
